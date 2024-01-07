@@ -235,6 +235,16 @@ const VideoPreview = ({ stream }: { stream: MediaStream | null }) => {
     if (videoRef.current && stream) {
       videoRef.current.srcObject = stream;
     }
+    // cleanup, disconnect the stream from the video element
+    return () => {
+      if (stream) {
+        let tracks = stream.getTracks(); 
+        tracks.forEach(track => track.stop());
+      }
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    };
   }, [stream]);
   if (!stream) {
     return null;
